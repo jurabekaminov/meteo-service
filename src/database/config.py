@@ -9,17 +9,16 @@ class DatabaseSettings(BaseSettings):
     HOST: str
     PORT: str
     DB: str
-    
+
     @property
     def connection_string(self) -> str:
         return (
             f"postgresql+asyncpg://{self.USER}:{self.PASSWORD}@"
             f"{self.HOST}:{self.PORT}/{self.DB}"
         )
-    
+
     model_config = SettingsConfigDict(
-        env_prefix="POSTGRES_",
-        env_file=".env"
+        env_prefix="POSTGRES_", env_file=".env", extra="ignore"
     )
 
 
