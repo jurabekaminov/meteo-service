@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    container_name: meteo_service
+    command: sh -c "uvicorn --factory src.main:create_app --host=0.0.0.0 --port=8003"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    ports:
+      - 8003:8003
+    restart: always
+  
+  migrations:
+    build: .
+    container_name: migrations-tool
+    command: sh -c "alembic upgrade head"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    profiles:
+      - tools
+  
+  db:
+    image: postgres:15
+    container_name: db-meteo
+    env_file:
+      - .env
+    ports:
+      - 5436:5432
+    restart: always
+    volumes:
+      - pgdbdata:/var/lib/postgresql/data/
+
+
+volumes:
+  pgdbdata:
+
+networks:
+  default:
+    external:
+      name: agronetwork
