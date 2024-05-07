@@ -48,6 +48,7 @@ class ETLHandler:
         return self.__scheduler
 
     async def __fields_etl_job(self) -> None:
+        logger.info("Fields etl job started.")
         async with FieldScraper() as scraper:
             fields = await scraper.get_all_fields()  # parse fields
         async with self.__uow:
@@ -55,7 +56,7 @@ class ETLHandler:
                 await self.__uow.fields.upsert(  # upsert fields data
                     data_on_insert=field.model_dump(),
                     data_on_update={
-                        "longtitude": field.longitude,
+                        "longitude": field.longitude,
                         "latitude": field.latitude,
                         "parse_meteo": field.parse_meteo,
                     },
@@ -83,13 +84,14 @@ class ETLHandler:
     ) -> list[MeteoDataParseSchema]:
         async with OpenWeatherScraper() as scraper:
             tasks = [
-                scraper.get_meteo_data(lat=field.latitude, lon=field.longtitude)
+                scraper.get_meteo_data(lat=field.latitude, lon=field.longitude)
                 for field in fields
             ]
             meteo_data = await asyncio.gather(*tasks)
             return meteo_data
 
     async def meteo_data_etl_job(self) -> None:
+        logger.info("Meteo data etl job started.")
         async with self.__uow:
             await self.__fields_etl_job()  # upsert fields data
             fields = await self.__uow.fields.read_many(parse_meteo=True)
