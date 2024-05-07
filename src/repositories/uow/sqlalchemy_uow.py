@@ -6,7 +6,7 @@ from src.repositories.uow.base import UnitOfWork
 
 class SQLAlchemyUnitOfWork(UnitOfWork):
     def __init__(self):
-        self.session_factory = db_helper.get_session_factory
+        self.session_factory = db_helper.get_session_factory()
 
     async def __aenter__(self):
         self.session = self.session_factory()

@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class OpenWeatherScraper(AbstractScraper):
-    BASE_URL: str = ScraperConstantsEnum.OPEN_WEATHER_URL
+    BASE_URL: str = ScraperConstantsEnum.OPEN_WEATHER_URL.value
 
     @property
     def _headers(self) -> dict[str, str]:

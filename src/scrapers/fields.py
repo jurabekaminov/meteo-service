@@ -4,7 +4,7 @@ from src.scrapers.constants import ScraperConstantsEnum
 
 
 class FieldScraper(AbstractScraper):
-    BASE_URL = ScraperConstantsEnum.FIELDS_SERVICE_URL
+    BASE_URL = ScraperConstantsEnum.FIELDS_SERVICE_URL.value
 
     @property
     def _headers(self) -> dict[str, str]:

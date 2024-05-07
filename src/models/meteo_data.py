@@ -11,10 +11,9 @@ class MeteoData(Base):
     
     id: Mapped[int] = mapped_column(primary_key=True)
     field_id: Mapped[int] = mapped_column(Integer, ForeignKey("fields.id"), index=True)
-    day: Mapped[date] = mapped_column(Date)
+    date_time: Mapped[datetime] = mapped_column(DateTime)
     temp: Mapped[float] = mapped_column(Float)
     humidity: Mapped[float] = mapped_column(Float)
     wind_speed: Mapped[float] = mapped_column(Float)
     sunrise: Mapped[datetime] = mapped_column(DateTime)
     sunset: Mapped[datetime] = mapped_column(DateTime)
-    date_time: Mapped[datetime] = mapped_column(DateTime)

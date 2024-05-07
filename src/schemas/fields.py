@@ -3,6 +3,6 @@ from pydantic import BaseModel
 
 class FieldSchema(BaseModel):
     id: int
-    longtitude: float
+    longitude: float
     latitude: float
-    parse_meteo: bool
+    parse_meteo: bool = True
