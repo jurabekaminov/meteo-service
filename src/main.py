@@ -5,6 +5,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 
+from src.api import router as meteo_router
 from src.config import settings
 from src.etl_handler import etl_handler
 
@@ -35,4 +36,5 @@ def create_app() -> FastAPI:
         debug=settings.DEBUG,
         lifespan=lifespan
     )
+    app.include_router(meteo_router)
     return app

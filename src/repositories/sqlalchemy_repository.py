@@ -44,6 +44,14 @@ class SQLAlchemyRepository(AbstractRepository, Generic[ModelType]):
         res_scalar = res.scalar_one_or_none()
         return res_scalar
 
+    async def read_last(self, **filters) -> ModelType | None:
+        res = await self.session.execute(
+            select(self.model)
+            .filter_by(**filters)
+            .order_by(self.model.id.desc())
+        )
+        return res.scalars().first()
+
     async def read_all(self) -> list[ModelType]:
         res = await self.session.execute(
             select(self.model)
