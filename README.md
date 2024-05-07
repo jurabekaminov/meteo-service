@@ -18,7 +18,7 @@
 
 Выполнить миграции (при необходимости):
 
-    docker compose -f docker-compose.yml run migrations
+    docker compose run migrations
 
 Из корневой папки проекта:
 
