@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
@@ -10,7 +10,7 @@ from src.repositories.uow.base import UnitOfWork  # noqa: TCH001
 from src.repositories.uow.sqlalchemy_uow import SQLAlchemyUnitOfWork
 from src.schemas.meteo_data import MeteoDataCreateSchema, MeteoDataParseSchema
 from src.scrapers.fields import FieldScraper
-from src.scrapers.open_weather import OpenWeatherScraper
+from src.scrapers.open_meteo import OpenMeteoScraper
 
 logger = logging.getLogger(__name__)
 
@@ -71,18 +71,30 @@ class ETLHandler:
     ) -> MeteoDataCreateSchema:
         return MeteoDataCreateSchema(
             field_id=field_id,
-            temp=meteo_data.temp,
+            date_time=datetime.fromtimestamp(meteo_data.date_time) + timedelta(hours=3),  # noqa: DTZ006
+            temperature=meteo_data.temperature,
             humidity=meteo_data.humidity,
             wind_speed=meteo_data.wind_speed,
-            sunrise=datetime.fromtimestamp(meteo_data.sunrise),  # noqa: DTZ006
-            sunset=datetime.fromtimestamp(meteo_data.sunset),  # noqa: DTZ006
-            date_time=datetime.fromtimestamp(meteo_data.date_time),  # noqa: DTZ006
+            precipitation=meteo_data.precipitation,
+            dew_point=meteo_data.dew_point,
+            soil_temperature_0cm=meteo_data.soil_temperature_0cm,
+            soil_temperature_6cm=meteo_data.soil_temperature_6cm,
+            soil_temperature_18cm=meteo_data.soil_temperature_18cm,
+            soil_moisture_0_to_1cm=meteo_data.soil_moisture_0_to_1cm,
+            soil_moisture_1_to_3cm=meteo_data.soil_moisture_1_to_3cm,
+            soil_moisture_3_to_9cm=meteo_data.soil_moisture_3_to_9cm,
+            soil_moisture_9_to_27cm=meteo_data.soil_moisture_9_to_27cm,
+            temperature_max=meteo_data.temperature_max,
+            temperature_min=meteo_data.temperature_min,
+            sunrise=datetime.fromtimestamp(meteo_data.sunrise) + timedelta(hours=3),  # noqa: DTZ006
+            sunset=datetime.fromtimestamp(meteo_data.sunset) + timedelta(hours=3),  # noqa: DTZ006
+            precipitation_sum=meteo_data.precipitation_sum,
         )
 
     async def __parse_meteo_data(
         self, fields: list[Field]
     ) -> list[MeteoDataParseSchema]:
-        async with OpenWeatherScraper() as scraper:
+        async with OpenMeteoScraper() as scraper:
             tasks = [
                 scraper.get_meteo_data(lat=field.latitude, lon=field.longitude)
                 for field in fields
