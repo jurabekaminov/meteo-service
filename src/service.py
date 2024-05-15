@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 
 from src.repositories.uow.base import UnitOfWork
 from src.repositories.uow.sqlalchemy_uow import SQLAlchemyUnitOfWork
@@ -14,6 +14,11 @@ class MeteoDataService:
     async def get_current_meteo_data(self, field_id: int) -> MeteoDataReadSchema:
         async with self.__uow:
             res = await self.__uow.meteo_data.read_last(field_id=field_id)
+            if not res:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Meteo data for field with id {field_id} not found.",
+                )
             return MeteoDataReadSchema.model_validate(res, from_attributes=True)
 
     async def get_current_meteo_data_preview(
@@ -21,4 +26,9 @@ class MeteoDataService:
     ) -> MeteoDataPreviewSchema:
         async with self.__uow:
             res = await self.__uow.meteo_data.read_last(field_id=field_id)
+            if not res:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Meteo data for field with id {field_id} not found.",
+                )
             return MeteoDataPreviewSchema.model_validate(res, from_attributes=True)
