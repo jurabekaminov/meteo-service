@@ -10,7 +10,7 @@
 - AppScheduler
 
 ## Сборка и запуск проекта:
-    git clone https://github.com/AgroScience-Team/meteo-service.git
+
 
 Если не создана docker-сеть `agronetwork`, то:
 
